@@ -1,6 +1,4 @@
 import argparse
-from http.client import responses
-
 import requests
 import sys
 
