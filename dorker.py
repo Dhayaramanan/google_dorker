@@ -1,4 +1,7 @@
 import argparse
+from http.client import responses
+
+import requests
 import sys
 
 from googlesearch import search
@@ -32,9 +35,12 @@ def main():
     print(f'Query String: {query_string}')
 
     if args.google is not None:
-        print(f'\nGoogle\'s top {args.google} results:')
-        for result in search(query_string, stop=args.google):
-            print(result)
+        if check_internet():
+            print(f'\nGoogle\'s top {args.google} results:')
+            for result in search(query_string, stop=args.google):
+                print(result)
+        else:
+            print('No Internet Connection: Internet Connection is required to perform Google search')
 
 
 def query_constructor(args):
@@ -75,6 +81,17 @@ def query_constructor(args):
             query += f'filetype:{args.file_type[0]}'
 
     return query
+
+
+def check_internet():
+    url = 'https://www.google.com'
+    timeout = 5
+
+    try:
+        response = requests.get(url, timeout=timeout)
+        return True
+    except requests.ConnectionError:
+        return False
 
 
 if __name__ == '__main__':
